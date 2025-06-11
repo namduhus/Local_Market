@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import rewview
+from routers import review
 from database import Base, engine
 
 app = FastAPI(title="Review Service API", version="1.0.0")
@@ -8,4 +8,4 @@ app = FastAPI(title="Review Service API", version="1.0.0")
 Base.metadata.create_all(bind=engine)
 
 # 라우터 등록
-app.include_router(rewview.router, prefix="/reviews", tags=["Reviews"])
+app.include_router(review.router, prefix="/reviews", tags=["Reviews"])

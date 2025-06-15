@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Review
-from schemas import ReviewCreate
+from schemas import ReviewCreate, ReviewUpdate
 
 # 리뷰 생성 함수
 def create_review(db: Session, review: ReviewCreate, user_id: int):
@@ -13,3 +13,22 @@ def create_review(db: Session, review: ReviewCreate, user_id: int):
 # 특정 콘텐츠 ID 기준으로 리뷰 조회 함수
 def get_reviews_by_content(db: Session, content_id: int):
     return db.query(Review).filter(Review.content_id == content_id).all()
+
+# 특정 콘텐츠 수정
+def update_review(db: Session, review_id: int, review_data: ReviewUpdate):
+    review = db.query(Review).filter(Review.id == review_id).first()
+    if not review:
+        return None
+    for key, value in review_data.dict(exclude_unset=True).items():
+        setattr(review, key, value)
+    db.commit()
+    db.refresh(review)
+    return review
+
+def delete_review(db: Session, review_id: int):
+    review = db.query(Review).filter(Review.id == review_id).first()
+    if not review:
+        return None
+    db.delete(review)
+    db.commit()
+    return review

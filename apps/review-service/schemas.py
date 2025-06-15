@@ -19,3 +19,10 @@ class ReviewOut(ReviewCreate):
     model_config = {
         "from_attributes": True   # ← v2 방식
     }
+
+class ReviewUpdate(BaseModel):
+    text: Optional[str]
+    rating: Optional[int]
+
+class Message(BaseModel):
+    detail: str

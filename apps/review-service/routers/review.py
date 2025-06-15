@@ -17,12 +17,12 @@ def get_db():
         db.close()
 
 # 리뷰 생성 API
-@router.post("/", response_model=ReviewOut)
+@router.post(path="/", summary="리뷰 생성 기능", description="리뷰할 contents_id 및 평점, 텍스트를 입력", tags=["Review"], response_model=ReviewOut)
 def create(review: ReviewCreate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     creator_id= int(current_user)
-    return create_review(db, review, user_id=creator_id)  # 임시 user_id (인증 연동 전)
+    return create_review(db, review, user_id=creator_id)  
 
 # 콘텐츠별 리뷰 조회 API
-@router.get("/content/{content_id}", response_model=List[ReviewOut])
+@router.get(path="/content/{content_id}", summary="작성한 리뷰 조회", description="작성한 리뷸 contents_id 입력", tags=["Search"], response_model=List[ReviewOut])
 def read_by_content(content_id: int, db: Session = Depends(get_db)):
     return get_reviews_by_content(db, content_id)

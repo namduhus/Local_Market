@@ -4,7 +4,7 @@ from database import Base, engine
 from fastapi.openapi.utils import get_openapi
 
 
-app = FastAPI(title="Content Service API", version="1.0.0")
+app = FastAPI(title="Content Service API", description="콘텐츠 등록, 조회, 상세기능을 제공하는 서비스", version="1.0.0")
 
 # 개발 초기에는 자동 테이블 생성을 위해 사용되며,
 # 운영 환경에서는 Alembic 같은 마이그레이션 도구로 대체하는 것이 좋습니다.

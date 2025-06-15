@@ -17,18 +17,18 @@ def get_db():
         db.close()
 
 # 콘텐츠 생성 API
-@router.post("/", response_model=ContentOut)
+@router.post(path="/", summary="콘텐츠 생성 기능", description="콘텐츠를 생성하는 기능입니다.", tags=["Create"], response_model=ContentOut)
 def create(content: ContentCreate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
     creator_id= int(current_user)
     return create_content(db, content, creator_id=creator_id)
 
 # 콘텐츠 전체 조회 API
-@router.get("/", response_model=List[ContentOut])
+@router.get(path="/", summary="생성된 콘텐츠 전체 조회 기능", description="생성된 콘텐츠 전체 조회합니다." , tags=["All_Contents"], response_model=List[ContentOut])
 def read_all(db: Session = Depends(get_db)):
     return get_contents(db)
 
 # 콘텐츠 상세 조회 API
-@router.get("/{content_id}", response_model=ContentOut)
+@router.get(path="/{content_id}", summary="특정 콘텐츠 조회 기능", description="조회할 콘텐츠 id 입력", tags=["Select_Contents"], response_model=ContentOut)
 def read_one(content_id: int, db: Session = Depends(get_db)):
     content = get_content_by_id(db, content_id)
     if not content:

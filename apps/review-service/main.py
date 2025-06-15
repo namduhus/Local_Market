@@ -4,7 +4,7 @@ from database import Base, engine
 from fastapi.openapi.utils import get_openapi
 
 
-app = FastAPI(title="Review Service API", version="1.0.0")
+app = FastAPI(title="Review Service API", description="리뷰 등록 및 조회를 담당하는 서비스.",version="1.0.0")
 
 # 개발용: 테이블 자동 생성
 Base.metadata.create_all(bind=engine)

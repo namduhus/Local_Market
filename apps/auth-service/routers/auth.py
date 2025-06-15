@@ -14,11 +14,11 @@ def get_db():
     finally:
         db.close()
 
-@router.post("/register", response_model=UserOut)
+@router.post(path="/register", summary="회원가입 기능", description="이메일 패스워드 입력", tags=["Register"],response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
 
-@router.post("/login")
+@router.post(path="/login", summary="로그인 기능", description="이메일 패스워드", tags=["Login"])
 def login(user: UserCreate, db: Session = Depends(get_db)):
     auth_user = authenticate_user(db, user.email, user.password)
     if not auth_user:

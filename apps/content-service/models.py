@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func
 from sqlalchemy.dialects.postgresql import ARRAY
 from database import Base
 from datetime import datetime
@@ -13,4 +13,4 @@ class Content(Base):
     location = Column(String)
     creator_id = Column(Integer)
     tags = Column(ARRAY(String), nullable=True)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False) 
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False) 

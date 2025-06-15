@@ -2,8 +2,8 @@ from utils.jwt_handler import get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import ContentCreate, ContentOut
-from crud import create_content, get_contents, get_content_by_id
+from schemas import ContentCreate, ContentOut, ContentUpdate
+from crud import create_content, get_contents, get_content_by_id, update_content, delete_content
 from typing import List
 
 router = APIRouter()
@@ -34,3 +34,19 @@ def read_one(content_id: int, db: Session = Depends(get_db)):
     if not content:
         raise HTTPException(status_code=404, detail="Content not found")
     return content
+
+# 콘텐츠 상세 수정 API
+@router.put(path="/{content_id}", summary="특정 콘텐츠 수정 기능", description="수정을 원하는 contents_id 입력",tags=["Update"], response_model=ContentOut)
+def update_content_route(content_id: int, content_data: ContentUpdate, db: Session = Depends(get_db)):
+    updated = update_content(db, content_id, content_data)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Content not found")
+    return updated
+
+# 콘텐츠 지정삭제 API
+@router.delete(path="/{content_id}", summary="특정 콘텐츠 삭제 기능", description="삭제를 원하는 contents_id 입력", tags=["Delete"], response_model=ContentOut)
+def delete_content_route(content_id: int, db: Session = Depends(get_db)):
+    deleted = delete_content(db, content_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Content not found")
+    return {"detail": "Content deleted"}

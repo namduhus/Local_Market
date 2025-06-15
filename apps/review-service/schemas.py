@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
 
@@ -13,7 +13,7 @@ class ReviewOut(ReviewCreate):
     id: int
     user_id: int
     sentiment: Optional[str]
-    keywords: Optional[List[str]]
+    keywords: Optional[List[str]] = Field(default_factory=list)
     created_at: Optional[datetime]
 
     model_config = {

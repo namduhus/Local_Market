@@ -18,15 +18,11 @@ def get_db():
 
 # 리뷰 생성 API
 @router.post("/", response_model=ReviewOut)
-def create(review: ReviewCreate, db: Session = Depends(get_db)):
-    return create_review(db, review, user_id=1)  # 임시 user_id (인증 연동 전)
+def create(review: ReviewCreate, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    creator_id= int(current_user)
+    return create_review(db, review, user_id=creator_id)  # 임시 user_id (인증 연동 전)
 
 # 콘텐츠별 리뷰 조회 API
 @router.get("/content/{content_id}", response_model=List[ReviewOut])
 def read_by_content(content_id: int, db: Session = Depends(get_db)):
     return get_reviews_by_content(db, content_id)
-
-
-@router.post("/jwt")
-def protected_endpoint(current_user=Depends(get_current_user)):
-    return {"user": current_user}

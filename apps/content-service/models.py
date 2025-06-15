@@ -1,8 +1,8 @@
-# SQLAlchemy 모델 정의
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ARRAY
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
+from sqlalchemy.dialects.postgresql import ARRAY
 from database import Base
+from datetime import datetime
 
-# 콘텐츠 테이블
 class Content(Base):
     __tablename__ = "contents"
 
@@ -11,6 +11,6 @@ class Content(Base):
     description = Column(Text)
     image_url = Column(String)
     location = Column(String)
-    creator_id = Column(Integer)  # auth-service와 분리되어 있으므로 ForeignKey 제거
-    tags = Column(ARRAY(String))
-    created_at = Column(TIMESTAMP)
+    creator_id = Column(Integer)
+    tags = Column(ARRAY(String), nullable=True)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False) 

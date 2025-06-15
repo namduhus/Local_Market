@@ -10,7 +10,7 @@ ALGORITHM = "HS256"
 def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload["sub"]  # 일반적으로 이메일
+        return payload["sub"]  # user_id
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

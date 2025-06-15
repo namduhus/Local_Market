@@ -1,5 +1,5 @@
 # Pydantic 스키마 정의
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
 
@@ -9,7 +9,7 @@ class ContentBase(BaseModel):
     description: str
     image_url: Optional[str]
     location: Optional[str]
-    tags: Optional[List[str]] = []
+    tags: Optional[List[str]] = Field(default_factory=list)
 
 class ContentCreate(ContentBase):
     pass

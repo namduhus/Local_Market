@@ -2,9 +2,18 @@
 from sqlalchemy.orm import Session
 from models import Content
 from schemas import ContentCreate
+from datetime import datetime
 # 콘텐츠 생성
 def create_content(db: Session, content: ContentCreate, creator_id: int):
-    db_content = Content(**content.dict(), creator_id=creator_id)
+    db_content = Content(
+        title=content.title,
+        description=content.description,
+        image_url=content.image_url,
+        location=content.location,
+        tags=content.tags or [],  # None 방지
+        creator_id=creator_id,
+        created_at=datetime.utcnow()
+    )
     db.add(db_content)
     db.commit()
     db.refresh(db_content)

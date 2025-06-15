@@ -2,7 +2,7 @@ from utils.jwt_handler import get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import ContentCreate, ContentOut, ContentUpdate
+from schemas import ContentCreate, ContentOut, ContentUpdate, Message
 from crud import create_content, get_contents, get_content_by_id, update_content, delete_content
 from typing import List
 
@@ -44,9 +44,9 @@ def update_content_route(content_id: int, content_data: ContentUpdate, db: Sessi
     return updated
 
 # 콘텐츠 지정삭제 API
-@router.delete(path="/content/{content_id}/delete", summary="특정 콘텐츠 삭제 기능", description="삭제를 원하는 contents_id 입력", tags=["Delete"], response_model=ContentOut)
+@router.delete(path="/content/{content_id}/delete", summary="특정 콘텐츠 삭제 기능", description="삭제를 원하는 contents_id 입력", tags=["Delete"], response_model=Message)
 def delete_content_route(content_id: int, db: Session = Depends(get_db)):
     deleted = delete_content(db, content_id)
-    if not deleted:
+    if deleted is None:
         raise HTTPException(status_code=404, detail="Content not found")
     return {"detail": "Content deleted"}

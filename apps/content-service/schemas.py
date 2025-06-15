@@ -29,3 +29,6 @@ class ContentUpdate(BaseModel):
     location: Optional[str]
     tags: Optional[List[str]]
     image_url: Optional[str]
+
+class Message(BaseModel):
+    detail: str

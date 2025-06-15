@@ -16,5 +16,6 @@ class ReviewOut(ReviewCreate):
     keywords: Optional[List[str]]
     created_at: Optional[datetime]
 
-    class Config:
-        orm_mode = True  # ORM 객체 직렬화 허용
+    model_config = {
+        "from_attributes": True   # ← v2 방식
+    }

@@ -1,37 +1,8 @@
 version: "3.8"
-
+# -----------DB 3종-------------
 services:
-  auth-service:
-    build: ./auth-service
-    ports:
-      - "8001:8000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@auth-db:5432/auth_db
-      - SECRET_KEY=supersecret
-    depends_on:
-      - auth-db
-
-  content-service:
-    build: ./content-service
-    ports:
-      - "8002:8000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@content-db:5432/content_db
-    depends_on:
-      - content-db
-
-  review-service:
-    build: ./review-service
-    ports:
-      - "8003:8000"
-    environment:
-      - DATABASE_URL=postgresql://user:password@review-db:5432/review_db
-    depends_on:
-      - review-db
-
   auth-db:
     image: postgres:15
-    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -40,10 +11,14 @@ services:
       - "5433:5432"
     volumes:
       - auth-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "auth_db Ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   content-db:
     image: postgres:15
-    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -52,10 +27,14 @@ services:
       - "5434:5432"
     volumes:
       - content-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "content_db Ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   review-db:
     image: postgres:15
-    restart: always
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -64,6 +43,43 @@ services:
       - "5435:5432"
     volumes:
       - review-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "review_db Ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+# --------서비스 3종--------
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8001:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@auth-db:5432/auth_db
+      - SECRET_KEY=supersecret
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  content-service:
+    build: ./content-service
+    ports:
+      - "8002:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@content-db:5432/content_db
+    depends_on:
+      content-db:
+        condition: service_healthy
+
+  review-service:
+    build: ./review-service
+    ports:
+      - "8003:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@review-db:5432/review_db
+    depends_on:
+      review-db:
+        condition: service_healthy
 
 volumes:
   auth-db-data:

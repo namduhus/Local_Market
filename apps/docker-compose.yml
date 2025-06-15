@@ -12,7 +12,7 @@ services:
     volumes:
       - auth-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "auth_db Ready"]
+      test: ["CMD-SHELL", "pg_isready -U user"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -28,7 +28,7 @@ services:
     volumes:
       - content-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "content_db Ready"]
+      test: ["CMD-SHELL", "pg_isready -U user"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -44,7 +44,7 @@ services:
     volumes:
       - review-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "review_db Ready"]
+      test: ["CMD-SHELL", "pg_isready -U user"]
       interval: 5s
       timeout: 3s
       retries: 5

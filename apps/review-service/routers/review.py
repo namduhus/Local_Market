@@ -4,6 +4,7 @@ from database import SessionLocal
 from schemas import ReviewCreate, ReviewOut
 from crud import create_review, get_reviews_by_content
 from typing import List
+from utils.jwt_handler import get_current_user
 
 router = APIRouter()
 
@@ -24,3 +25,8 @@ def create(review: ReviewCreate, db: Session = Depends(get_db)):
 @router.get("/content/{content_id}", response_model=List[ReviewOut])
 def read_by_content(content_id: int, db: Session = Depends(get_db)):
     return get_reviews_by_content(db, content_id)
+
+
+@router.post("/jwt")
+def protected_endpoint(current_user=Depends(get_current_user)):
+    return {"user": current_user}

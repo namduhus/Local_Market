@@ -1,3 +1,4 @@
+from utils.jwt_handler import get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal
@@ -33,3 +34,7 @@ def read_one(content_id: int, db: Session = Depends(get_db)):
     if not content:
         raise HTTPException(status_code=404, detail="Content not found")
     return content
+
+@router.post("/jwt")
+def protected_endpoint(current_user=Depends(get_current_user)):
+    return {"user": current_user}

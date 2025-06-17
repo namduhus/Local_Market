@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
 from models import Review
 from schemas import ReviewCreate, ReviewUpdate
+from utils.sentiment import analyze_sentiment
 
 # 리뷰 생성 함수
 def create_review(db: Session, review: ReviewCreate, user_id: int):
-    db_review = Review(**review.dict(), user_id=user_id)
+    sentiment = analyze_sentiment(review.text)
+    db_review = Review(**review.dict(), user_id=user_id, sentiment=sentiment)
     db.add(db_review)
     db.commit()
     db.refresh(db_review)

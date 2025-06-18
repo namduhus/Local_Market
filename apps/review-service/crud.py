@@ -3,12 +3,22 @@ from models import Review
 from schemas import ReviewCreate, ReviewUpdate
 from utils.sentiment import analyze_sentiment_with_rating
 from utils.keywords import extract_keywords
+from fastapi import HTTPException, status
 
+def is_review_exist(db: Session, user_id: int, content_id: int) -> bool:
+    return db.query(Review).filter_by(user_id=user_id, content_id=content_id).first() is not None
 
 # 리뷰 생성 함수
 def create_review(db: Session, review: ReviewCreate, user_id: int):
+    existing_review = db.query(Review).filter_by(user_id=user_id, content_id=review.content_id).first()
+    if existing_review:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="이미 해당 콘텐츠에 리뷰를 작성하셨습니다."
+        )
     sentiment = analyze_sentiment_with_rating(review.text, review.rating)
     keywords = extract_keywords(review.text)
+    
     db_review = Review(**review.dict(), user_id=user_id, sentiment=sentiment, keywords=keywords)
     db.add(db_review)
     db.commit()

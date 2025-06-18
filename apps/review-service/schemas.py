@@ -12,6 +12,8 @@ class ReviewCreate(BaseModel):
 class ReviewOut(ReviewCreate):
     id: int
     user_id: int
+    rating: int
+    text: str
     sentiment: Optional[str]
     keywords: Optional[List[str]] = Field(default_factory=list)
     created_at: Optional[datetime]

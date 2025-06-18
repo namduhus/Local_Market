@@ -5,7 +5,7 @@ from schemas import ReviewCreate, ReviewOut, ReviewUpdate, Message
 from crud import create_review, get_reviews_by_content, update_review, delete_review
 from typing import List
 from utils.jwt_handler import get_current_user
-
+from models import Review
 router = APIRouter()
 
 # 요청마다 새로운 DB 세션 생성
@@ -42,3 +42,20 @@ def delete_review_route(review_id: int, db: Session = Depends(get_db)):
     if deleted is None:
         raise HTTPException(status_code=404, detail="Review not found")
     return {"detail": "Review deleted"}
+
+
+@router.get("/users/{user_id}/reviews", response_model=List[ReviewOut])
+def get_user_reviews(
+    user_id: int,
+    page: int = Query(1, ge=1),
+     limit: int = Query(10, le=100),
+    db: Session = Depends(get_db)
+):
+    offset = (page - 1) * limit
+    reviews = db.query(Review)\
+        .filter(Review.user_id == user_id)\
+        .order_by(Review.created_at.desc())\
+        .offset(offset)\
+        .limit(limit)\
+        .all()
+    return reviews

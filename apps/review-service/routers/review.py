@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import ReviewCreate, ReviewOut, ReviewUpdate, Message
-from crud import create_review, get_reviews_by_content, update_review, delete_review
+from schemas import ReviewCreate, ReviewOut, ReviewUpdate, Message, ReviewStats
+from crud import create_review, get_reviews_by_content, update_review, delete_review, get_review_stats
 from typing import List
 from utils.jwt_handler import get_current_user
 from models import Review
@@ -59,3 +59,7 @@ def get_user_reviews(
         .limit(limit)\
         .all()
     return reviews
+
+@router.get("/content/{content_id}/review-stats", response_model=ReviewStats)
+def get_stats(content_id: int, db: Session = Depends(get_db)):
+    return get_review_stats(db, content_id)

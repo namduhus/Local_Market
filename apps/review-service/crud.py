@@ -4,6 +4,7 @@ from schemas import ReviewCreate, ReviewUpdate
 from utils.sentiment import analyze_sentiment_with_rating
 from utils.keywords import extract_keywords
 from fastapi import HTTPException, status
+from sqlalchemy import func
 
 def is_review_exist(db: Session, user_id: int, content_id: int) -> bool:
     return db.query(Review).filter_by(user_id=user_id, content_id=content_id).first() is not None
@@ -54,3 +55,29 @@ def delete_review(db: Session, review_id: int):
     db.delete(review)
     db.commit()
     return review
+
+def get_review_stats(db: Session, content_id: int):
+    # 평균 평점
+    avg_rating = db.query(func.avg(Review.rating)).filter(Review.content_id == content_id).scalar()
+     # 총 리뷰 수
+    total_reviews = db.query(func.count(Review.id)).filter(Review.content_id == content_id).scalar()
+
+     # 감정 분포
+    sentiment_counts = (
+        db.query(Review.sentiment, func.count(Review.sentiment))
+        .filter(Review.content_id == content_id)
+        .group_by(Review.sentiment)
+        .all()
+    )
+
+    sentiment_distribution = {
+        (sentiment if sentiment else "unknown"): count
+        for sentiment, count in sentiment_counts
+    }
+
+    return {
+        "content_id": content_id,
+        "average_rating": round(avg_rating or 0, 2),
+        "review_count": total_reviews,
+        "sentiment_distribution": sentiment_distribution
+    }

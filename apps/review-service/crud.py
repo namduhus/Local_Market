@@ -16,8 +16,15 @@ def create_review(db: Session, review: ReviewCreate, user_id: int):
     return db_review
 
 # 특정 콘텐츠 ID 기준으로 리뷰 조회 함수
-def get_reviews_by_content(db: Session, content_id: int):
-    return db.query(Review).filter(Review.content_id == content_id).all()
+def get_reviews_by_content(db: Session, content_id: int, sort: str = "latest"):
+    query = db.query(Review).filter(Review.content_id == content_id)
+
+    if sort == "rating":
+        query = query.order_by(Review.rating.desc())
+    else:
+        query = query.order_by(Review.created_at.desc())
+
+    return query.all()
 
 # 특정 콘텐츠 수정
 def update_review(db: Session, review_id: int, review_data: ReviewUpdate):

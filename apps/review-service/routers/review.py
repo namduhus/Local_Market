@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas import ReviewCreate, ReviewOut, ReviewUpdate, Message
@@ -23,9 +23,9 @@ def create(review: ReviewCreate, db: Session = Depends(get_db), current_user=Dep
     return create_review(db, review, user_id=creator_id)  
 
 # 콘텐츠별 리뷰 조회 API
-@router.get(path="/review/{content_id}", summary="작성한 리뷰 조회", description="작성한 리뷰 contents_id 입력", tags=["Search"], response_model=List[ReviewOut])
-def read_by_content(content_id: int, db: Session = Depends(get_db)):
-    return get_reviews_by_content(db, content_id)
+@router.get(path="/review/{content_id}", summary="작성한 리뷰 조회", description="작성한 리뷰 contents_id 입력 (정렬 옵션, latest, rating)", tags=["Search"], response_model=List[ReviewOut])
+def read_by_content(content_id: int, sort: str = Query("latest", enum=["latest", "rating"]),db: Session = Depends(get_db)):
+    return get_reviews_by_content(db, content_id, sort)
 
 # 콘텐츠별 리뷰 수정
 @router.put("/review/{review_id}/update", response_model=ReviewOut)

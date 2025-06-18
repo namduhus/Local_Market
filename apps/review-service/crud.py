@@ -2,10 +2,14 @@ from sqlalchemy.orm import Session
 from models import Review
 from schemas import ReviewCreate, ReviewUpdate
 from utils.sentiment import analyze_sentiment_with_rating
+from utils.keywords import extract_keywords
+
+
 # 리뷰 생성 함수
 def create_review(db: Session, review: ReviewCreate, user_id: int):
     sentiment = analyze_sentiment_with_rating(review.text, review.rating)
-    db_review = Review(**review.dict(), user_id=user_id, sentiment=sentiment)
+    keywords = extract_keywords(review.text)
+    db_review = Review(**review.dict(), user_id=user_id, sentiment=sentiment, keywords=keywords)
     db.add(db_review)
     db.commit()
     db.refresh(db_review)

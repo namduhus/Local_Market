@@ -44,7 +44,7 @@ def delete_review_route(review_id: int, db: Session = Depends(get_db)):
     return {"detail": "Review deleted"}
 
 
-@router.get("/users/{user_id}/reviews", response_model=List[ReviewOut])
+@router.get("/users/{user_id}/reviews", summary="마이페이지 리뷰 조회", response_model=List[ReviewOut])
 def get_user_reviews(
     user_id: int,
     page: int = Query(1, ge=1),

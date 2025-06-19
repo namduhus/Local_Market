@@ -1,1 +1,12 @@
+# Alembic
+alembic/__pycache__/
+apps\content-service\content-service\env.py
+# Python
+__pycache__/
+*.pyc
+
+# venv
 .venv/
+
+# dotenv
+*.env

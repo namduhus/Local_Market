@@ -1,8 +1,8 @@
 from utils.jwt_handler import get_current_user
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from schemas import ContentCreate, ContentOut, ContentUpdate, Message
+from schemas import ContentCreate, ContentOut, ContentUpdate, Message, CategoryEnum
 from crud import create_content, get_contents, get_content_by_id, update_content, delete_content
 from typing import List
 
@@ -24,8 +24,12 @@ def create(content: ContentCreate, db: Session = Depends(get_db), current_user=D
 
 # 콘텐츠 전체 조회 API
 @router.get(path="/content/search", summary="생성된 콘텐츠 전체 조회 기능", description="생성된 콘텐츠 전체 조회합니다." , tags=["All_Contents"], response_model=List[ContentOut])
-def read_all(db: Session = Depends(get_db)):
-    return get_contents(db)
+def get_all_contents(
+    category: CategoryEnum | None = Query(default=None),  # 필터 추가
+    db: Session = Depends(get_db)
+):
+    contents = get_contents(db=db, category=category)  #  필터 넘김
+    return contents
 
 # 콘텐츠 상세 조회 API
 @router.get(path="/content/{content_id}", summary="특정 콘텐츠 조회 기능", description="조회할 콘텐츠 id 입력", tags=["Select_Contents"], response_model=ContentOut)

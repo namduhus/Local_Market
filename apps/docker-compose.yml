@@ -48,6 +48,21 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+  reservation-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: reservation_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - reservation-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d reservation_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 # --------서비스 3종--------
   auth-service:
@@ -82,8 +97,19 @@ services:
     depends_on:
       review-db:
         condition: service_healthy
+  reservation-service:
+    build: ./reservation-service
+    ports:
+      - "8004:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@reservation-db:5432/reservation_db
+      - SECRET_KEY=supersecret
+    depends_on:
+      reservation-db:
+        condition: service_healthy
 
 volumes:
   auth-db-data:
   content-db-data:
   review-db-data:
+  reservation-db-data:

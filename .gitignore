@@ -10,3 +10,6 @@ __pycache__/
 
 # dotenv
 *.env
+apps/content-service/content-service/env.py
+.gitignore
+apps/reservation-service/reservation/env.py

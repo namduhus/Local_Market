@@ -17,3 +17,6 @@ def create_reservation(db: Session, reservation: ReservationCreate, user_id: int
     db.commit()
     db.refresh(db_reservation)
     return db_reservation
+
+def get_user_reservations(db: Session, user_id: int):
+    return db.query(Reservation).filter(Reservation.user_id == user_id).order_by(Reservation.date.desc()).all()

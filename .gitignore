@@ -13,3 +13,5 @@ __pycache__/
 apps/content-service/content-service/env.py
 .gitignore
 apps/reservation-service/reservation/env.py
+apps/auth-service/alembic/env.py
+apps/alembic.ini

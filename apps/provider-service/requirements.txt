@@ -1,0 +1,12 @@
+fastapi==0.115.12
+uvicorn==0.34.3
+pydantic==2.11.5
+pydantic_core==2.33.2
+sqlalchemy==2.0.41
+psycopg2-binary==2.9.10
+python-jose==3.5.0
+passlib==1.7.4
+python-dotenv==1.1.0
+python-multipart==0.0.20
+typing_extensions==4.14.0
+annotated-types==0.7.0

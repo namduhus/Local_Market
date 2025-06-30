@@ -140,3 +140,4 @@ volumes:
   content-db-data:
   review-db-data:
   reservation-db-data:
+  provider-db-data:

@@ -1,5 +1,5 @@
 version: "3.8"
-# -----------DB 3종-------------
+# -----------DB-------------
 services:
   auth-db:
     image: postgres:15
@@ -63,8 +63,24 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+  
+  provider-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: provider_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - provider-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d provider_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
-# --------서비스 3종--------
+# --------서비스--------
   auth-service:
     build: ./auth-service
     ports:
@@ -106,6 +122,17 @@ services:
       - SECRET_KEY=supersecret
     depends_on:
       reservation-db:
+        condition: service_healthy
+  
+  provider-service:
+    build: ./provider-service
+    ports:
+      - "8005:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@provider-db:5432/provider_db
+      - SECRET_KEY=supersecret
+    depends_on:
+      provider-db:
         condition: service_healthy
 
 volumes:

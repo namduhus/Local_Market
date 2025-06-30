@@ -6,7 +6,7 @@ class Provider(Base):
     __tablename__ = "providers"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
     phone_number = Column(String, unique=True, nullable=False)
     business_name = Column(String, unique=True, nullable=False)
     business_number = Column(String, unique=True, nullable=False)
